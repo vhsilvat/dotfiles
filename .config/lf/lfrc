@@ -1,0 +1,42 @@
+# Basic vars
+set shell bash
+set previewer ~/.config/lf/preview
+set shellopts '-eu'
+set ifs "\n"
+set scrolloff 10
+set icons
+set hidden
+set period 1
+
+# Vars that depend on environmental variables
+# $lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+
+# cmds/functions
+cmd open ${{
+    case $(file --mime-type $f -b) in
+        image/vnd.djvu|application/pdf|application/octet-stream) setsid -f zathura $fx >/dev/null 2>&1 ;;
+        text/*) setsid $TERMINAL -e $EDITOR $fx >/dev/null 2>&1 & ;;
+        image/x-xcf|image/svg+xml) setsid -f gimp $f >/dev/null 2>&1 ;;
+        image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\)\(_large\)*$" | sxiv -aio 2>/dev/null | lf-select ;;
+        audio/*) mpv --audio-display=no $f ;;
+        video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
+        application/pdf|application/vnd*|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+        *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
+    esac
+}}
+
+cmd moveto ${{
+    dest="$(cd $HOME && fd -a -H -t d | fzf --header='Move to where?' --preview '')" &&
+    mv -iv $fx $dest &&
+    notify-send "File(s) moved to $dest"
+}}
+
+cmd copyto ${{
+    dest="$(cd $HOME && fd -a -H -t d | fzf --header='Copy to where?' --preview '')" &&
+    cp -ivr $fx $dest &&
+    notify-send "File(s) copied to $dest"
+}}
+
+# Bindings
+map C copyto
+map M moveto

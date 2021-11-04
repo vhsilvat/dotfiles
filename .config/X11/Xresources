@@ -1,0 +1,17 @@
+!-----------
+! Xft config
+!------------
+
+Xft.dpi: 96
+Xft.antialias: true
+Xft.hinting: true
+Xft:rgba: rgb
+Xft.autohint: true
+Xft.hintstyle: hintslight
+Xft.lcdfilter: lcdfilter
+
+!--------------
+! Color Scheme
+!--------------
+
+#include "colors/gruvbox-dark"
