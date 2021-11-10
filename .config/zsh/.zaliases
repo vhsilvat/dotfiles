@@ -6,4 +6,5 @@ alias sz="source ~/.config/zsh/.zshrc"
 alias grep="grep --color=auto"
 alias diff="diff --color=auto"
 alias clima="curl -s wttr.in"
+alias temp="watch sensors"
 alias dots='/usr/bin/git --git-dir=/home/victor/.dotfiles/ --work-tree=/home/victor'
