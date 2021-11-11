@@ -1,4 +1,18 @@
-plugins=(git)
+#
+# ~/.zshrc
+#
+
+#
+# HISTORICO
+#
+
+HISTSIZE=10000000
+SAVEHIST=10000000
+HISTFILE="$HOME/.cache/zsh/zsh_history"
+# persiste comandos de todos os terminais abertos
+setopt INC_APPEND_HISTORY
+# ignora comandos duplicados adjacentes
+setopt HIST_IGNORE_DUPS
 
 #
 # SOURCE
@@ -6,10 +20,8 @@ plugins=(git)
 
 # Carrega as funções
 [ -f "$ZDOTDIR/.zfunctions" ] && source "$ZDOTDIR/.zfunctions"
-
 # Carrega os atalhos
 [ -f "$ZDOTDIR/.zaliases" ] && source "$ZDOTDIR/.zaliases"
-
 # Carregas as configurações do prompt
 [ -f "$ZDOTDIR/.zprompt" ] && source "$ZDOTDIR/.zprompt"
 
