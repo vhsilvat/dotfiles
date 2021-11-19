@@ -2,12 +2,23 @@
 # ~/.zaliases
 #
 
+# bin
 alias cp="cp -iv"
 alias mv="mv -iv"
 alias rm="rm -iv"
-alias sz="source ~/.config/zsh/.zshrc"
 alias grep="grep --color=auto"
 alias diff="diff --color=auto"
+
+# system
+alias shutdown="sudo shutdown -h now"
+alias reboot="sudo reboot"
+
+# source
+alias sz="source ~/.config/zsh/.zshrc"
+
+# custom
 alias clima="curl -s wttr.in"
 alias temp="watch sensors"
+
+# git
 alias dots='/usr/bin/git --git-dir=/home/victor/.dotfiles/ --work-tree=/home/victor'
