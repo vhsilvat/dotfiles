@@ -2,6 +2,11 @@
 # ~/.zfunctions
 #
 
+autoload -U zcalc
+calculadora() {
+	zcalc -f -e "$*"
+}
+
 # Make dir and cd into it
 mkcd() {
     mkdir -p "$1"

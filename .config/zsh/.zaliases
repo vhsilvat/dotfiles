@@ -17,8 +17,16 @@ alias reboot="sudo reboot"
 alias sz="source ~/.config/zsh/.zshrc"
 
 # custom
+alias v="nvim"
+alias vi="nvim"
+alias vim="nvim"
 alias clima="curl -s wttr.in"
 alias temp="watch sensors"
+alias mpv="swallow mpv"
+alias sxiv="swallow sxiv"
+alias zathura="swallow zathura"
+alias layout="setxkbmap -model latitude -layout br"
+alias calc="noglob calculadora"
 
 # git
 alias dots='/usr/bin/git --git-dir=/home/victor/.dotfiles/ --work-tree=/home/victor'
