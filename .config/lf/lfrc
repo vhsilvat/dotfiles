@@ -8,32 +8,68 @@ set icons
 set hidden
 set period 1
 
+#$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
+
 # cmds/functions
 cmd open ${{
-    case $(file --mime-type $f -b) in
-        image/vnd.djvu|application/pdf|application/octet-stream) setsid -f zathura $fx >/dev/null 2>&1 ;;
-        text/*) setsid $TERMINAL -e $EDITOR $fx >/dev/null 2>&1 & ;;
-        image/x-xcf|image/svg+xml) setsid -f gimp $f >/dev/null 2>&1 ;;
-        image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\)\(_large\)*$" | sxiv -aio 2>/dev/null | lf-select ;;
+    case $(file --mime-type "$(readlink -f $f)" -b) in
+        image/vnd.djvu|application/pdf|application/octet-stream|application/postscript) setsid -f zathura $fx >/dev/null 2>&1 ;;
+        text/*) $EDITOR $fx;;
+        image/svg+xml) display -- $f ;;
+        image/*) rotdir $f | grep -i "\.\(png\|jpg\|jpeg\|gif\|webp\|tif\|ico\)\(_large\)*$" | setsid -f sxiv -aio 2>/dev/null | lf-select & ;;
         audio/*) mpv --audio-display=no $f ;;
         video/*) setsid -f mpv $f -quiet >/dev/null 2>&1 ;;
         application/pdf|application/vnd*|application/epub*) setsid -f zathura $fx >/dev/null 2>&1 ;;
+        application/pgp-encrypted) $EDITOR $fx ;;
         *) for f in $fx; do setsid -f $OPENER $f >/dev/null 2>&1; done;;
     esac
 }}
 
+cmd mkdir $mkdir -p "$(echo $* | tr ' ' '\ ')"
+
+cmd extract ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	printf "%s\n\t" "$fx"
+	printf "extract?[y/N]"
+	read ans
+	[ $ans = "y" ] && aunpack $fx
+}}
+
+cmd delete ${{
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	printf "%s\n\t" "$fx"
+	printf "delete?[y/N]"
+	read ans
+	[ $ans = "y" ] && rm -rf -- $fx
+}}
+
 cmd moveto ${{
-    dest="$(cd $HOME && fd -a -H -t d | fzf --header='Move to where?' --preview '')" &&
-    mv -iv $fx $dest &&
-    notify-send "File(s) moved to $dest"
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Mover para onde?"
+	dest="$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/lf/bm-dirs | fzf | sed 's|~|$HOME|')" &&
+	for x in $fx; do
+		eval mv -iv \"$x\" \"$dest\"
+	done &&
+	notify-send "🚚 Arquivo(s) movido(s)." "Arquivo(s) movido(s) para $dest."
 }}
 
 cmd copyto ${{
-    dest="$(cd $HOME && fd -a -H -t d | fzf --header='Copy to where?' --preview '')" &&
-    cp -ivr $fx $dest &&
-    notify-send "File(s) copied to $dest"
+	clear; tput cup $(($(tput lines)/3)); tput bold
+	set -f
+	clear; echo "Copiar para onde?"
+	dest="$(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/lf/bm-dirs | fzf | sed 's|~|$HOME|')" &&
+	for x in $fx; do
+		eval cp -ivr \"$x\" \"$dest\"
+	done &&
+	notify-send "📋 Arquivo(s) copiados(s)." "Arquivos(s) copiado(s) para $dest."
 }}
 
 # Bindings
-map C copyto
+map J $lf -remote "send $id cd $(sed -e 's/\s*#.*//' -e '/^$/d' -e 's/^\S*\s*//' ${XDG_CONFIG_HOME:-$HOME/.config}/lf/bm-dirs | fzf)"
+map E extract
+map D delete
 map M moveto
+map C copyto
