@@ -27,6 +27,7 @@ alias sxiv="swallow sxiv"
 alias zathura="swallow zathura"
 alias layout="setxkbmap -model latitude -layout br"
 alias calc="noglob calculadora"
+alias tetris="tetriscurses"
 
 # git
 alias dots='/usr/bin/git --git-dir=/home/victor/.dotfiles/ --work-tree=/home/victor'

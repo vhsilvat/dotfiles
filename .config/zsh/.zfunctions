@@ -2,7 +2,10 @@
 # ~/.zfunctions
 #
 
-autoload -U zcalc
+# load de funções do zsh
+autoload -U zcalci
+autoload -Uz tetriscurses
+
 calculadora() {
 	zcalc -f -e "$*"
 }
