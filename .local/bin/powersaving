@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 # screenblank - Toggle screen blanking/powersaving on/off
 
 XBLANKTEXT=$(xset -q | grep timeout | awk '{printf $2}')

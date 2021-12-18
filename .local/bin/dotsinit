@@ -1,13 +1,13 @@
 #!/bin/sh
 
-# create dir for git bare repo
+# inicia o repositório bare
 git init --bare $HOME/.dotfiles
 
-# create alias - use "dots" instead of "git" to interact
+# cria o alias "dots" no lugar de "git" para interagir
 alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-# set flag to hide not explicitly tracked files
+# esconde os arquivos não incluidos explicitamente
 dots config --local status.showUntrackedFiles no
 
-# add alias to .bashrc
+# adiciona o alias no zsh
 echo "alias dots='/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'" >> $ZDOTDIR/.zaliases

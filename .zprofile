@@ -36,9 +36,12 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # Configuração custom do pfetch
 export PF_INFO="ascii title os kernel pkgs memory wm shell term editor palette"
 
+# LESS config
+export LESS='-g -i -M -R -S -w -z-4'
+
 # Configuração custom do fzf
-export FZF_DEFAULT_COMMAND='fd -t f -L -H -c always'
-export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+#export FZF_DEFAULT_COMMAND='fd -t f -L -H -c always'
+#export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 export FZF_DEFAULT_OPTS='
     --ansi --border --height 100%
     --color fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f
