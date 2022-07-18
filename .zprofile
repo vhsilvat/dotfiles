@@ -4,6 +4,8 @@
 
 # Adiciona '~/.local/bin' ao $PATH
 export PATH=$(du "$HOME/.local/bin" | cut -f2 | tr '\n' ':' | sed 's/:*$//'):$PATH
+# Adiciona o postgresql ao $PATH
+export PATH=$(du "/usr/local/pgsql/bin" | cut -f2 | tr '\n' ':' | sed 's/:*$//'):$PATH
 
 # Programas default
 export VISUAL="nvim"

@@ -3,7 +3,7 @@
 #
 
 # load de funções do zsh
-autoload -U zcalci
+autoload -U zcalc
 autoload -Uz tetriscurses
 
 calculadora() {
