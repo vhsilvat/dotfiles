@@ -3,5 +3,5 @@
 URL="https://google.com/search?q="
 QUERY=$(echo '' | dmenu -p "Web Search:" -i -f)
 if [ -n "$QUERY" ]; then
-	$BROWSER --new-window "${URL}${QUERY}"
+	$BROWSER --new-tab "${URL}${QUERY}"
 fi
