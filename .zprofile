@@ -6,7 +6,7 @@
 export PATH=$(du "$HOME/.local/bin" | cut -f2 | tr '\n' ':' | sed 's/:*$//'):$PATH
 # Adiciona o postgresql ao $PATH
 export PATH=$(du "/usr/local/pgsql/bin" | cut -f2 | tr '\n' ':' | sed 's/:*$//'):$PATH
-export OPENAI_API_KEY="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"
+export OPENAI_API_KEY=""
 
 # Programas default
 export VISUAL="nvim"
