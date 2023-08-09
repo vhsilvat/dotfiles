@@ -7,6 +7,7 @@ set scrolloff 10
 set icons
 set hidden
 set period 1
+set mouse true
 
 #$lf -remote "send $id set previewer ${XDG_CONFIG_HOME:-$HOME/.config}/lf/scope"
 
