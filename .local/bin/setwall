@@ -1,13 +1,13 @@
 #!/bin/sh
 
-bgloc="$HOME/.cache/wall"
+#bgloc="$HOME/.cache/wall/"
+bgloc="$HOME/.cache/wall/wall.jpg"
 
 trueloc="$(readlink -f "$1")" &&
 case "$(file --mime-type -b "$trueloc")" in
-	image/* ) ln -sf "$(readlink -f "$1")" "$bgloc" && notify-send -i "$bgloc" "Wallpaper set" ;;
-	inode/directory ) ln -sf "$(find "$trueloc" -iregex '.*.\(jpg\|jpeg\|png\|gif\)' -type f | shuf -n 1)" "$bgloc" && notify-send -i "$bgloc" "Random Wallpaper set" ;;
-	*) notify-send "Error" "Not a valid image." ; exit 1;;
+	image/* ) ln -sf "$trueloc" "$bgloc" && [ -z "$silent" ] && notify-send -i "$bgloc" "Wallpaper set" ;;
+	inode/directory ) ln -sf "$(find "$trueloc" -iregex '.*.\(jpg\|jpeg\|png\|gif\)' -type f | shuf -n 1)" "$bgloc" && [ -z "$silent" ] && notify-send -i "$bgloc" "Random Wallpaper chosen." ;;
+	*) [ -z "$silent" ] && notify-send "Error" "Not a valid image or directory." ; exit 1;;
 esac
-#[ "$1" ] && cp "$1" $wall && notify-send -i "$wall" "Wallpaper set"
 
 xwallpaper --debug --zoom $bgloc
