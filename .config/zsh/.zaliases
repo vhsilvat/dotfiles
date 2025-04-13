@@ -35,6 +35,7 @@ alias ld="lazydocker"
 alias lg="lazygit"
 alias todo="todo.sh -c"
 alias lf="lfub"
+alias xsc="xclip -selection clipboard"
 
 # git
 alias dots='/usr/bin/git --git-dir=/home/victor/.dotfiles/ --work-tree=/home/victor'
