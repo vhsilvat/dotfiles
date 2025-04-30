@@ -6,7 +6,7 @@ xrdb -merge ~/.config/X11/Xresources
 start-pulseaudio-x11
 
 # seta o layout br no teclado
-setxkbmap -model latitude -layout br
+setxkbmap -layout us,br -variant ,abnt2 -option grp:ralt_rshift_toggle
 
 # inicia o gerenciador de notificações
 dunst &
