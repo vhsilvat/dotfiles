@@ -1,0 +1,18 @@
+#!/bin/sh
+
+sudo pacman --noconfirm -S xorg-server xorg-apps xorg-xinit xorg-xrdb xorg-xrandr pulseaudio pulsemixer dunst picom redshift
+
+git clone https://github.com/vhsilvat/suckless.git ~/.config/suckless
+
+suckless_dirs="dmenu dwm dwmblocks scroll sent slock st surf sxiv tabbed"
+
+for dir in $suckless_dirs; do
+    if [ -d ~/.config/suckless/$dir ]; then
+        cd ~/.config/suckless/$dir
+        sudo make clean install
+    else
+        echo "Diretório $dir não encontrado, pulando..."
+    fi
+done
+
+echo "Instalação concluída com sucesso."
