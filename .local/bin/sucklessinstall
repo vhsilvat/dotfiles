@@ -1,6 +1,16 @@
 #!/bin/sh
 
-sudo pacman --noconfirm -S xorg-server xorg-apps xorg-xinit xorg-xrdb xorg-xrandr pulseaudio pulsemixer dunst picom redshift
+sudo pacman --noconfirm -S xorg-server xorg-apps xorg-xinit xorg-xrdb xorg-xrandr pulseaudio pulsemixer dunst picom redshift glib2 imlib2 webkit2gtk libexif base-devel git
+
+mkdir -p ~/.cache/builds
+cd ~/.cache/builds
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si --noconfirm
+cd ~
+rm -rf ~/.cache/builds/yay
+
+yay --noconfirm -S nerd-fonts-jetbrains-mono nerd-fonts-symbols
 
 git clone https://github.com/vhsilvat/suckless.git ~/.config/suckless
 
