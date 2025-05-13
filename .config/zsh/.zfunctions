@@ -63,16 +63,29 @@ extract() {
     return "$e"
 }
 
-#lfcd () {
-#    tmp="$(mktemp)"
-#    command lf -last-dir-path="$tmp" "$@"
-#    if [ -f "$tmp" ]; then
-#        dir="$(cat "$tmp")"
-#        rm -f "$tmp" >/dev/null
-#        [ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-#    fi
-#}
-#bindkey -s '^o' 'lfcd\n'
+livro() {
+    # Configura ueberzug para fzf se disponível
+    if command -v ueberzug >/dev/null 2>&1; then
+        export FIFO_UEBERZUG="/tmp/fzf-ueberzug-fifo"
+        [ -p "$FIFO_UEBERZUG" ] || mkfifo "$FIFO_UEBERZUG"
+        ueberzug layer --silent --parser json < "$FIFO_UEBERZUG" &
+        UEBERZUG_PID=$!
+        # Limpa ueberzug ao sair
+        trap 'kill $UEBERZUG_PID 2>/dev/null' EXIT
+    fi
+    
+    # Busca arquivos com fd e exibe preview com fzf
+    local arquivo
+    arquivo=$(fd -e pdf -e epub . ~/documents/livros | fzf --preview '~/.local/bin/preview {}' --preview-window=right:40%:wrap)
+    
+    # Mata o processo ueberzug se estiver rodando
+    [ -n "$UEBERZUG_PID" ] && kill $UEBERZUG_PID 2>/dev/null
+    
+    # Abre o arquivo selecionado com zathura
+    if [[ -n "$arquivo" ]]; then
+        swallow zathura "$arquivo"
+    fi
+}
 
 # Use lf to switch directories and bind it to ctrl-o
 lfcd () {
