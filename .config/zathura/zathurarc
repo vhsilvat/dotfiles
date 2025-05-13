@@ -4,12 +4,15 @@ map r reload
 map R rotate
 map K zoom in
 map J zoom out
+map H navigate previous
+map L navigate next
 map i recolor
 map p print
 
 map D toggle_page_mode
 
 set sandbox none
+set database sqlite
 set selection-clipboard clipboard
 
 set notification-error-bg       "#282828" # bg
@@ -41,13 +44,15 @@ set statusbar-fg                "#ebdbb2" # fg
 set highlight-color             "#fabd2f" # bright:yellow
 set highlight-active-color      "#fe8019" # bright:orange
 
-set default-bg                  rgba(29,32,33,0.55)
+#set default-bg                  rgba(29,32,33,0.55)
+set default-bg                  "#282828"
 set default-fg                  "#ebdbb2" # fg
 set render-loading              true
 set render-loading-bg           "#282828" # bg
 set render-loading-fg           "#ebdbb2" # fg
 
 # Recolor book content's color
-set recolor-lightcolor          rgba(29,32,33,0.55)
+#set recolor-lightcolor          rgba(29,32,33,0.55)
+set recolor-lightcolor          "#282828"
 set recolor-darkcolor           "#ebdbb2" # fg
 set recolor                     "true"
