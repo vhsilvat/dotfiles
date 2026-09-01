@@ -1,28 +1,78 @@
 #!/bin/sh
 
-sudo pacman --noconfirm -S xorg-server xorg-apps xorg-xinit xorg-xrdb xorg-xrandr pulseaudio pulsemixer dunst picom redshift glib2 imlib2 webkit2gtk libexif base-devel git
+log() {
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1"
+}
 
-mkdir -p ~/.cache/builds
-cd ~/.cache/builds
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si --noconfirm
-cd ~
-rm -rf ~/.cache/builds/yay
+error() {
+    log "ERRO: $1"
+    exit 1
+}
 
-yay --noconfirm -S nerd-fonts-jetbrains-mono nerd-fonts-symbols
+log "Instalando pacotes básicos..."
+packages="xorg-server xorg-apps xorg-xinit xorg-xrdb xorg-xrandr pulseaudio pulsemixer dunst picom redshift glib2 imlib2 webkit2gtk libexif git neovim brave feh xclip maim zathura zathura-pdf-mupdf mpv ffmpeg alsa-utils bluez bluez-utils acpi tmux xdotool xwallpaper unzip libxft lib32-libxft lf ueberzug imagemagick gimp trash-cli p7zip unrar mediainfo djvulibre inkscape lynx bat-cat ffmpegthumbnailer poppler atool odt2txt ncmpcpp fd pfetch neofetch"
 
-git clone https://github.com/vhsilvat/suckless.git ~/.config/suckless
+if ! sudo pacman --needed --noconfirm -S $packages; then
+    error "Falha na instalação de pacotes via pacman."
+fi
 
+if ! command -v yay >/dev/null 2>&1; then
+    log "Instalando yay..."
+    mkdir -p ~/.cache/builds && cd ~/.cache/builds
+    git clone https://aur.archlinux.org/yay.git || error "Clone do yay falhou."
+    cd yay
+    makepkg -si --needed --noconfirm || error "Instalação do yay falhou."
+    cd ~
+    rm -rf ~/.cache/builds/yay
+else
+    log "yay já instalado."
+fi
+
+log "Instalando pacotes do AUR..."
+aur_packages="nerd-fonts-jetbrains-mono nerd-fonts-symbols gnome-epub-thumbnailer"
+if ! yay --needed --noconfirm -S $aur_packages; then
+    error "Falha na instalação de pacotes AUR."
+fi
+
+log "Instalando dotfiles..."
+if [ ! -d "$HOME/.dotfiles" ]; then
+    git clone --bare https://github.com/vhsilvat/dotfiles.git "$HOME/.dotfiles" || error "Clone dos dotfiles falhou."
+fi
+
+dots() {
+   /usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME "$@"
+}
+
+mkdir -p .dotfiles-backup
+if ! dots checkout 2>/dev/null; then
+    log "Conflitos detectados, fazendo backup..."
+    dots checkout 2>&1 | grep -E "\s+\." | awk '{print $1}' | xargs -I{} sh -c 'mkdir -p ".dotfiles-backup/$(dirname {})" && mv {} .dotfiles-backup/{}'
+    dots checkout || error "Falha ao aplicar dotfiles."
+fi
+
+dots config status.showUntrackedFiles no
+
+log "Instalando softwares suckless..."
+[ -d "$HOME/.config/suckless" ] && mv ~/.config/suckless ~/.config/suckless.bak.$(date +%Y%m%d%H%M%S)
+
+git clone https://github.com/vhsilvat/suckless.git ~/.config/suckless || error "Clone do repositório suckless falhou."
+
+mkdir -p ~/.logs
 suckless_dirs="dmenu dwm dwmblocks scroll sent slock st surf sxiv tabbed"
 
 for dir in $suckless_dirs; do
-    if [ -d ~/.config/suckless/$dir ]; then
-        cd ~/.config/suckless/$dir
-        sudo make clean install
+    path="$HOME/.config/suckless/$dir"
+    if [ -d "$path" ]; then
+        log "Compilando $dir..."
+        cd "$path"
+        log_file="$HOME/.logs/${dir}_build_$(date +%Y%m%d%H%M%S).log"
+        if ! sudo make clean install >"$log_file" 2>&1; then
+            error "$dir falhou. Verifique $log_file"
+        fi
     else
-        echo "Diretório $dir não encontrado, pulando..."
+        log "$dir não encontrado, ignorando."
     fi
 done
 
-echo "Instalação concluída com sucesso."
+log "Instalação concluída com sucesso."
+

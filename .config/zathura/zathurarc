@@ -14,6 +14,8 @@ map D toggle_page_mode
 set sandbox none
 set database sqlite
 set selection-clipboard clipboard
+set guioptions shv
+set font "EB Garamond 12"
 
 set notification-error-bg       "#282828" # bg
 set notification-error-fg       "#fb4934" # bright:red
