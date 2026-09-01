@@ -64,24 +64,45 @@ extract() {
 }
 
 livro() {
-    # Configura ueberzug para fzf se disponível
-    if command -v ueberzug >/dev/null 2>&1; then
-        export FIFO_UEBERZUG="/tmp/fzf-ueberzug-fifo"
-        [ -p "$FIFO_UEBERZUG" ] || mkfifo "$FIFO_UEBERZUG"
-        ueberzug layer --silent --parser json < "$FIFO_UEBERZUG" &
-        UEBERZUG_PID=$!
-        # Limpa ueberzug ao sair
-        trap 'kill $UEBERZUG_PID 2>/dev/null' EXIT
+    local pasta_livros="$HOME/documents/livros"
+    
+    if command -v ueberzugpp >/dev/null 2>&1; then
+        export UEBERZUG_FIFO="/tmp/ueberzugpp-${$}.fifo"
+        rm -f "$UEBERZUG_FIFO"
+        mkfifo "$UEBERZUG_FIFO"
+
+        # Inicia a camada do ueberzugpp com parser json no fifo
+        ueberzugpp layer --silent --parser json < "$UEBERZUG_FIFO" &
+        local uz_pid=$!
+
+        # Mantém a conexão aberta para o fifo não fechar entre comandos
+        exec 3>"$UEBERZUG_FIFO"
+
+        cleanup() {
+            exec 3>&- 2>/dev/null
+            [ -n "$uz_pid" ] && kill "$uz_pid" 2>/dev/null
+            rm -f "$UEBERZUG_FIFO" 2>/dev/null
+        }
+        trap cleanup EXIT INT TERM
     fi
-    
-    # Busca arquivos com fd e exibe preview com fzf
+
     local arquivo
-    arquivo=$(fd -e pdf -e epub . ~/documents/livros | fzf --preview '~/.local/bin/preview {}' --preview-window=right:40%:wrap)
-    
-    # Mata o processo ueberzug se estiver rodando
-    [ -n "$UEBERZUG_PID" ] && kill $UEBERZUG_PID 2>/dev/null
-    
-    # Abre o arquivo selecionado com zathura
+    arquivo=$(fd -e pdf -e epub . "$pasta_livros" | fzf \
+        --preview "$HOME/.local/bin/preview {}" \
+        --preview-window="right:50%:wrap" \
+        --bind="ctrl-d:preview-page-down,ctrl-u:preview-page-up" \
+        --prompt="📖 Livros > ")
+
+    # Limpeza ao sair do fzf
+    if [ -n "$uz_pid" ]; then
+        # Limpa o preview antes de fechar
+        printf '{"action": "remove", "identifier": "fzf-preview"}\n' > "$UEBERZUG_FIFO" 2>/dev/null
+        exec 3>&- 2>/dev/null
+        kill "$uz_pid" 2>/dev/null
+        rm -f "$UEBERZUG_FIFO" 2>/dev/null
+        trap - EXIT INT TERM
+    fi
+
     if [[ -n "$arquivo" ]]; then
         swallow zathura "$arquivo"
     fi

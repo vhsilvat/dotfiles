@@ -29,7 +29,7 @@
     # the top and down respectively.
     # The width can be negative.  In this case the actual width is the
     # screen width minus the width defined in within the geometry option.
-    geometry = "250x5-10+32"
+    # geometry = "250x5-10+32"
 
     # Turn on the progess bar
     # progress_bar = true
@@ -61,9 +61,9 @@
     transparency = 0
 
     # The height of the entire notification.  If the height is smaller
-    # than the font height and padding combined, it will be raised
+
     # to the font height and padding.
-    notification_height = 0
+    # notification_height = 0
 
     # Draw a line of "separator_height" pixel height between two
     # notifications.
@@ -226,7 +226,7 @@
     # Print a notification on startup.
     # This is mainly for error detection, since dbus (re-)starts dunst
     # automatically after a crash.
-    startup_notification = false
+    # startup_notification = false
 
     # Manage dunst's desire for talking
     # Can be one of the following values:
@@ -235,7 +235,7 @@
     #  mesg: Important Messages
     #  info: all unimportant stuff
     # debug: all less than unimportant stuff
-    verbosity = mesg
+    # verbosity = mesg
 
     # Define the corner radius of the notification window
     # in pixel size. If the radius is 0, you have no rounded
@@ -305,7 +305,7 @@
 # and should be replaced by dunstctl calls. You can use the configuration of your
 # WM or DE to bind these to shortcuts of your choice.
 # Check the dunstctl manual page for more info.
-[shortcuts]
+#[shortcuts]
 
     # Shortcuts are specified as [modifier+][modifier+]...key
     # Available modifiers are "ctrl", "mod1" (the alt-key), "mod2",
@@ -314,19 +314,19 @@
 
     # Close notification. Equivalent dunstctl command:
     # dunstctl close
-    close = ctrl+space
+    # close = ctrl+space
 
     # Close all notifications. Equivalent dunstctl command:
     # dunstctl close-all
-    close_all = ctrl+shift+space
+    # close_all = ctrl+shift+space
 
     # Redisplay last message(s). Equivalent dunstctl command:
     # dunstctl history-pop
-    history = ctrl+period
+    # history = ctrl+period
 
     # Context menu. Equivalent dunstctl command:
     # dunstctl context
-    context = ctrl+shift+period
+    # context = ctrl+shift+period
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.

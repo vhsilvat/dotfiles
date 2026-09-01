@@ -5,8 +5,8 @@ xrdb -merge ~/.config/X11/Xresources
 # inicia o controlador de audio
 start-pulseaudio-x11
 
-# seta o layout br no teclado
-setxkbmap -layout us,br -variant ,abnt2 -option grp:ralt_rshift_toggle
+# seta opções de layout us e br no teclado
+setxkbmap -option -layout us,br -option grp:ralt_rshift_toggle
 
 # inicia o gerenciador de notificações
 dunst &
