@@ -1,0 +1,55 @@
+#!/bin/sh
+
+detect_audio() {
+    (ffmpeg -f alsa -i default -t 0.1 -f null - >/dev/null 2>&1 && echo "default") ||
+    (ffmpeg -f alsa -i hw:1,6 -t 0.1 -f null - >/dev/null 2>&1 && echo "hw:1,6") ||
+    echo "hw:1,0"
+}
+
+setup_capture() {
+    for card in 0 1 2; do
+        amixer -c "$card" get Capture >/dev/null 2>&1 && {
+            amixer -c "$card" set Capture cap 80% >/dev/null 2>&1
+            return 0
+        }
+    done
+}
+
+cleanup_pids() {
+    [[ -f /tmp/recpid ]] && {
+        local pid=$(cat /tmp/recpid)
+        kill -0 "$pid" 2>/dev/null && {
+            kill -15 "$pid" 2>/dev/null
+            sleep 1
+            kill -9 "$pid" 2>/dev/null
+        }
+        rm -f /tmp/recpid
+    }
+}
+
+record() {
+    cleanup_pids
+    setup_capture
+    mkdir -p "$HOME/videos/screencaptures"
+    
+    ffmpeg -s "$(xdpyinfo | awk '/dimensions/{print $2}')" -f x11grab -r 30 -i :0.0 \
+           -f alsa -i "$(detect_audio)" -ac 2 \
+           -c:v h264 -qp 0 -c:a aac -b:a 192k \
+           -af "highpass=f=80,lowpass=f=8000" \
+           "$HOME/videos/screencaptures/$(date '+%a__%b%d__%H_%M_%S').mkv" &
+    
+    echo $! > /tmp/recpid
+    echo "Rec 󰑊" > /tmp/recordingicon && pkill -RTMIN+6 dwmblocks
+    notify-send -t 500 -h string:bgcolor:#b8bb26 "Gravação iniciada"
+}
+
+end() {
+    cleanup_pids
+    for card in 0 1 2; do
+        amixer -c "$card" set Capture nocap >/dev/null 2>&1
+    done
+    echo "" > /tmp/recordingicon && pkill -RTMIN+6 dwmblocks
+    notify-send -t 500 -h string:bgcolor:#fb4934 "Gravação encerrada"
+}
+
+([[ -f /tmp/recpid ]] && end && exit 0) || record
